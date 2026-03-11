@@ -20,12 +20,12 @@ export default defineConfig({
         'src/**/*.test.*',
         'src/**/*.spec.*',
         'src/env.ts',
-        'src/proxy.ts',
         'src/instrumentation.ts',
         'src/instrumentation-client.ts',
         'src/app/**/layout.tsx',
         'src/i18n/navigation.ts',
         'src/components/theme-provider.tsx',
+        'src/lib/supabase/client.ts',
       ],
       thresholds: {
         statements: 100,

@@ -12,6 +12,8 @@ export const env = createEnv({
     // three-runtime coverage. Runtime warnings fire if either is missing.
     SENTRY_DSN: z.string().url().optional(),
     SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
+    // Supabase service role key -- server-only, bypasses RLS
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
     // TODO: Add your server-side env vars here
     // DATABASE_URL: z.string().url(),
     // API_KEY: z.string().min(1),
@@ -23,6 +25,8 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
     // NEXT_PUBLIC_APP_URL: z.string().url(),
   },
 
@@ -34,6 +38,9 @@ export const env = createEnv({
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     // DATABASE_URL: process.env.DATABASE_URL,
     // API_KEY: process.env.API_KEY,
     // NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,

@@ -13,9 +13,14 @@ src/
   components/       # Shared React components
     ui/             # shadcn/ui base components (Button, PageCenter)
   i18n/             # Internationalization utilities
-  lib/              # Shared utilities (cn, etc.)
+  lib/
+    utils.ts        # cn() utility (clsx + tailwind-merge)
+    supabase/       # Supabase SSR client factories
+      client.ts     # Browser client (Client Components)
+      server.ts     # Server client (Server Components / Route Handlers)
+      middleware.ts  # Middleware session refresh (cookie forwarding)
   env.ts            # Type-safe environment variables (t3-env + Zod)
-  proxy.ts          # Next.js middleware (locale redirect)
+  proxy.ts          # Next.js middleware (Supabase session refresh + locale redirect)
   instrumentation.ts          # Sentry server runtime
   instrumentation-client.ts   # Sentry browser runtime
 messages/           # i18n JSON files (en.json, zh.json)
@@ -91,3 +96,4 @@ GitHub Actions runs on push to `main` and PRs:
 - Default locale: `zh`, supported: `['en', 'zh']`
 - Theme: `next-themes` with `attribute="class"`, `defaultTheme="system"`
 - Env validation: `@t3-oss/env-nextjs` in `src/env.ts`, skip with `SKIP_ENV_VALIDATION=1`
+- Supabase env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`sb_publishable_` format), `SUPABASE_SERVICE_ROLE_KEY` (`sb_secret_` format). New API key format -- not legacy JWT.

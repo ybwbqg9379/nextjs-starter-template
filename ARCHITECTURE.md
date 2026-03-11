@@ -8,16 +8,21 @@ My App is a Next.js 16 application built on App Router with production-grade inf
 
 ## Current Stack
 
-| Layer      | Technology                         | Purpose                              |
-| ---------- | ---------------------------------- | ------------------------------------ |
-| Framework  | Next.js 16 (App Router, Turbopack) | Full-stack React framework           |
-| Language   | TypeScript (strict mode)           | Type safety                          |
-| Styling    | Tailwind CSS 4, shadcn/ui (Nova)   | Design system                        |
-| i18n       | next-intl                          | Internationalization (zh/en)         |
-| Theme      | next-themes                        | Dark/light mode                      |
-| Env        | @t3-oss/env-nextjs + Zod           | Type-safe environment variables      |
-| Monitoring | @sentry/nextjs                     | Error tracking (server/edge/browser) |
-| Testing    | Vitest 4, React Testing Library    | Unit tests with 100% coverage        |
+| Layer            | Technology                                      | Purpose                                    |
+| ---------------- | ----------------------------------------------- | ------------------------------------------ |
+| Framework        | Next.js 16 (App Router, Turbopack)              | Full-stack React framework                 |
+| Language         | TypeScript (strict mode)                        | Type safety                                |
+| Styling          | Tailwind CSS 4, shadcn/ui (Nova)                | Design system                              |
+| i18n             | next-intl                                       | Internationalization (zh/en)               |
+| Theme            | next-themes                                     | Dark/light mode                            |
+| Env              | @t3-oss/env-nextjs + Zod                        | Type-safe environment variables            |
+| Monitoring       | @sentry/nextjs                                  | Error tracking (server/edge/browser)       |
+| Testing          | Vitest 4, React Testing Library                 | Unit tests with 100% coverage              |
+| Backend Platform | Supabase (Postgres + Auth + Storage + Realtime) | Database / Auth / Storage / Realtime       |
+| Database         | Supabase Postgres 17.x                          | RLS row-level security, new API key format |
+| Auth             | Supabase Auth (pending)                         | OAuth / Magic Link / SSO                   |
+| Storage          | Supabase Storage (pending)                      | File storage with RLS                      |
+| Realtime         | Supabase Realtime (pending)                     | Real-time subscriptions                    |
 
 ## Engineering Quality
 
@@ -64,8 +69,12 @@ src/
     navigation.ts            # Type-safe navigation exports
   lib/
     utils.ts                 # cn() utility
+    supabase/
+      client.ts              # Browser Supabase client (Client Components)
+      server.ts              # Server Supabase client (Server Components / Route Handlers)
+      middleware.ts           # Middleware session refresh (cookie forwarding)
   env.ts                     # Environment variable validation
-  proxy.ts                   # Next.js middleware (locale redirect)
+  proxy.ts                   # Next.js middleware (Supabase session refresh + locale redirect)
   instrumentation.ts         # Sentry server init
   instrumentation-client.ts  # Sentry browser init
   test/
@@ -108,6 +117,15 @@ docs/
 - DSN pair validation (server + client must both be set)
 - `tunnelRoute: '/monitoring'` to bypass ad-blockers
 - `global-error.tsx` reports root layout crashes with inline styles (CSS may be unavailable)
+
+### Backend: Supabase SSR
+
+- **Architecture**: Supabase full-stack platform (Postgres + Auth + Storage + Realtime)
+- **API Keys**: New format (`sb_publishable_` / `sb_secret_`), not legacy JWT
+- **SSR Integration**: `@supabase/ssr` with three client factories (`client.ts`, `server.ts`, `middleware.ts`)
+- **Middleware**: `proxy.ts` refreshes Supabase session first, then runs next-intl, forwards cookies with full options
+- **Env vars**: `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (client) + `SUPABASE_SERVICE_ROLE_KEY` (server)
+- **Pending**: Auth flows, Storage, Realtime
 
 ### Security Headers
 

@@ -30,7 +30,7 @@ Pre-commit hooks (husky + lint-staged) auto-run ESLint and Prettier on staged fi
 
 ### Routing & i18n
 
-- `src/proxy.ts` is the Next.js middleware (renamed from `middleware.ts` for Next.js 16 compatibility). Handles locale detection/redirect via `next-intl/middleware`.
+- `src/proxy.ts` is the Next.js middleware (renamed from `middleware.ts` for Next.js 16 compatibility). Refreshes the Supabase session first, then handles locale detection/redirect via `next-intl/middleware`, forwarding auth cookies with full options.
 - App Router uses `src/app/[locale]/` dynamic segment. Locales: `en`, `zh` (default: `zh`).
 - All UI strings come from `messages/en.json` and `messages/zh.json` -- zero hardcoded strings. `eslint-plugin-i18next` enforces this in `mode: all` (catches both JSX text and JS variable assignments). CI enforces 1:1 key parity between the two files.
 - i18n utilities in `src/i18n/`: `routing.ts` (locale config), `request.ts` (server-side resolution), `navigation.ts` (type-safe `Link`, `redirect`, `useRouter`, `usePathname`).
@@ -71,6 +71,15 @@ Pre-commit hooks (husky + lint-staged) auto-run ESLint and Prettier on staged fi
   - Rendering-only checks (`toBeInTheDocument()` on trivially rendered elements without behavioral assertions)
   - CSS class assertions as primary checks -- use semantic queries (`getByRole`, `getByLabelText`) instead
   - Prefer `getByRole`/`getByLabelText` over `querySelector`/`getByTestId` for accessibility-first testing
+
+### Backend (Supabase)
+
+- Supabase full-stack platform: Postgres 17 + Auth + Storage + Realtime.
+- New API key format: `sb_publishable_` (client) / `sb_secret_` (server). Legacy JWT keys NOT used.
+- SSR clients: `src/lib/supabase/{client,server,middleware}.ts` via `@supabase/ssr`.
+- `proxy.ts` refreshes Supabase session before next-intl routing, forwards auth cookies with full options.
+- Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+- Pending: Auth flows (OAuth / Magic Link / SSO), Storage (file storage with RLS), Realtime (subscriptions).
 
 ### Error Monitoring
 
