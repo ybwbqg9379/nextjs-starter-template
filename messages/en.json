@@ -1,0 +1,49 @@
+{
+  "common": {
+    "appName": "My App",
+    "tagline": "Built with Next.js Starter Template",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "export": "Export",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "noData": "No data available",
+    "language": "Language",
+    "switchLang": "Switch to Chinese",
+    "switchLangLabel": "中文",
+    "toggleTheme": "Toggle theme",
+    "copyright": "My App \u00a9"
+  },
+  "home": {
+    "title": "Welcome to My App",
+    "subtitle": "A production-ready Next.js starter with i18n, design tokens, and full test coverage.",
+    "getStarted": "Get Started",
+    "features": {
+      "typeSafety": "Type Safety",
+      "typeSafetyDesc": "TypeScript strict mode with t3-env validated environment variables",
+      "i18n": "Internationalization",
+      "i18nDesc": "Zero-leak i18n with ESLint enforcement and key parity checks",
+      "designSystem": "Design System",
+      "designSystemDesc": "Design tokens, Tailwind CSS 4, and shadcn/ui components"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "settings": "Settings"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try Again",
+    "notFound": "Page Not Found",
+    "notFoundDesc": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go Home"
+  }
+}

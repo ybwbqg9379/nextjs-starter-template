@@ -1,0 +1,51 @@
+#!/bin/sh
+# ─────────────────────────────────────────────────────────
+# Documentation governance: enforce CHANGELOG update
+# when source files or config change.
+# ─────────────────────────────────────────────────────────
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+
+# Patterns that require CHANGELOG to be updated
+SRC_CHANGED=$(echo "$STAGED" | grep -E '^(src/|package\.json|eslint\.config|next\.config|vitest\.config|\.prettierrc|\.github/)' || true)
+
+# Patterns that ARE documentation (exempt from the check)
+CHANGELOG_CHANGED=$(echo "$STAGED" | grep '^CHANGELOG\.md$' || true)
+
+# If source/config changed but CHANGELOG didn't → block commit
+if [ -n "$SRC_CHANGED" ] && [ -z "$CHANGELOG_CHANGED" ]; then
+  echo ""
+  echo "\033[33m  ⚠  CHANGELOG.md 未更新\033[0m"
+  echo ""
+  echo "  检测到 src/ 或配置文件变更，但 CHANGELOG.md 未在暂存区。"
+  echo "  请更新 CHANGELOG.md 后重新提交。"
+  echo ""
+  echo "\033[2m  如确实不需要（如纯重构、格式化），可使用：\033[0m"
+  echo "\033[2m    git commit --no-verify\033[0m"
+  echo ""
+  echo "  变更文件："
+  echo "$SRC_CHANGED" | sed 's/^/    /'
+  echo ""
+  exit 1
+fi
+# ─────────────────────────────────────────────────────────
+# Design token compliance: block raw Tailwind font sizes,
+# hardcoded colors, and arbitrary spacing in staged TSX.
+# ─────────────────────────────────────────────────────────
+
+TOKEN_FILES=$(echo "$STAGED" | grep -E '\.tsx$' | grep -v '\.test\.' | grep -v '\.spec\.' || true)
+
+if [ -n "$TOKEN_FILES" ]; then
+  # shellcheck disable=SC2086
+  bash scripts/check-design-tokens.sh $TOKEN_FILES
+fi
+
+# lint-staged (format + lint auto-fix)
+npx lint-staged
+
+# ─────────────────────────────────────────────────────────
+# Test with coverage: must meet 100% thresholds.
+# Matches CI's test:coverage step so failures are caught
+# locally before push.
+# ─────────────────────────────────────────────────────────
+npm run test:coverage

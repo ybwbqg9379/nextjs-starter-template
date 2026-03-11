@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Build
+        run: npm run build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  docs:
+    name: Documentation Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Verify CHANGELOG updated on feature commits
+        if: github.event_name == 'pull_request'
+        run: |
+          CHANGED=$(git diff --name-only origin/main...HEAD)
+          SRC_CHANGED=$(echo "$CHANGED" | grep -E "^(src/|package\.json|eslint\.config|next\.config|vitest\.config|\.prettierrc|\.github/)" || true)
+          CHANGELOG_CHANGED=$(echo "$CHANGED" | grep "CHANGELOG.md" || true)
+
+          if [ -n "$SRC_CHANGED" ] && [ -z "$CHANGELOG_CHANGED" ]; then
+            echo "::warning::Source files changed but CHANGELOG.md was not updated."
+            echo "Please update CHANGELOG.md with a description of your changes."
+            exit 1
+          fi
+
+      - name: Verify i18n key parity
+        run: |
+          EN_KEYS=$(node -e "
+            const en = require('./messages/en.json');
+            const flatten = (obj, prefix = '') =>
+              Object.entries(obj).reduce((acc, [k, v]) => {
+                const key = prefix ? prefix + '.' + k : k;
+                return typeof v === 'object' && v !== null
+                  ? [...acc, ...flatten(v, key)]
+                  : [...acc, key];
+              }, []);
+            console.log(flatten(en).sort().join('\n'));
+          ")
+          ZH_KEYS=$(node -e "
+            const zh = require('./messages/zh.json');
+            const flatten = (obj, prefix = '') =>
+              Object.entries(obj).reduce((acc, [k, v]) => {
+                const key = prefix ? prefix + '.' + k : k;
+                return typeof v === 'object' && v !== null
+                  ? [...acc, ...flatten(v, key)]
+                  : [...acc, key];
+              }, []);
+            console.log(flatten(zh).sort().join('\n'));
+          ")
+
+          if [ "$EN_KEYS" != "$ZH_KEYS" ]; then
+            echo "::error::i18n key parity violation: en.json and zh.json have different keys."
+            diff <(echo "$EN_KEYS") <(echo "$ZH_KEYS") || true
+            exit 1
+          fi
+          echo "i18n parity check passed."
+
+      - name: Verify design token compliance
+        run: bash scripts/check-design-tokens.sh
