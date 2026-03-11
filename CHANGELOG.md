@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## Initial Template
 
+- **[2026-03-11]** CI fix: add `SKIP_ENV_VALIDATION=true` to build step so CI doesn't fail on missing Supabase credentials
 - **[2026-03-11]** Supabase SSR integration: `@supabase/supabase-js` + `@supabase/ssr`; three client factories (browser/server/middleware); `proxy.ts` session refresh + next-intl composition with full cookie option forwarding; `env.ts` fail-fast validation for `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SERVICE_ROLE_KEY`; new API key format (`sb_publishable_` / `sb_secret_`); 14 new tests (proxy + middleware + server)
 - Next.js 16 with App Router and Turbopack
 - TypeScript strict mode with type-safe environment variables (@t3-oss/env-nextjs + Zod)
