@@ -20,7 +20,7 @@ My App is a Next.js 16 application built on App Router with production-grade inf
 | Testing          | Vitest 4, React Testing Library                 | Unit tests with 100% coverage              |
 | Backend Platform | Supabase (Postgres + Auth + Storage + Realtime) | Database / Auth / Storage / Realtime       |
 | Database         | Supabase Postgres 17.x                          | RLS row-level security, new API key format |
-| Auth             | Supabase Auth (pending)                         | OAuth / Magic Link / SSO                   |
+| Auth             | Supabase Auth                                   | Email + Password with email verification   |
 | Storage          | Supabase Storage (pending)                      | File storage with RLS                      |
 | Realtime         | Supabase Realtime (pending)                     | Real-time subscriptions                    |
 
@@ -45,15 +45,26 @@ src/
     globals.css              # Tailwind CSS 4 theme (oklch tokens, @utility shorthands)
     global-error.tsx         # Root error boundary (inline styles, Sentry)
     favicon.ico
+    actions/
+      auth.ts                # Server Actions: login, signup, logout
+    auth/
+      confirm/
+        route.ts             # Email confirmation callback (OTP + code exchange)
     [locale]/
-      layout.tsx             # Root locale layout (fonts, providers, header/footer)
+      layout.tsx             # Root locale layout (fonts, providers, header/footer, user fetch)
       page.tsx               # Home page (server component shell)
+      login/
+        page.tsx             # Login page
+      signup/
+        page.tsx             # Signup page
       error.tsx              # Error boundary (i18n, Sentry)
       loading.tsx            # Loading spinner
       not-found.tsx          # 404 page
   components/
-    header.tsx               # App header (nav, toggles)
+    header.tsx               # App header (nav, auth UI, toggles)
     footer.tsx               # Copyright footer
+    login-form.tsx           # Login form (useActionState, i18n errors)
+    signup-form.tsx          # Signup form (useActionState, email confirmation)
     home-content.tsx         # Home page content (hero, features)
     feature-card.tsx         # Reusable feature card
     copyright-year.tsx       # Dynamic year (client component)
@@ -69,6 +80,8 @@ src/
     navigation.ts            # Type-safe navigation exports
   lib/
     utils.ts                 # cn() utility
+    auth/
+      validation.ts          # Zod schemas (LoginSchema, SignupSchema) + AuthState type
     supabase/
       client.ts              # Browser Supabase client (Client Components)
       server.ts              # Server Supabase client (Server Components / Route Handlers)
@@ -123,9 +136,19 @@ docs/
 - **Architecture**: Supabase full-stack platform (Postgres + Auth + Storage + Realtime)
 - **API Keys**: New format (`sb_publishable_` / `sb_secret_`), not legacy JWT
 - **SSR Integration**: `@supabase/ssr` with three client factories (`client.ts`, `server.ts`, `middleware.ts`)
-- **Middleware**: `proxy.ts` refreshes Supabase session first, then runs next-intl, forwards cookies with full options
+- **Middleware**: `proxy.ts` refreshes Supabase session first, then runs next-intl, forwards cookies with full options. Authenticated users on auth pages (`/login`, `/signup`) are redirected to locale root.
 - **Env vars**: `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (client) + `SUPABASE_SERVICE_ROLE_KEY` (server)
-- **Pending**: Auth flows, Storage, Realtime
+- **Pending**: Storage, Realtime
+
+### Authentication
+
+- **Flow**: Email + Password with email verification (PKCE flow)
+- **Server Actions**: `login`, `signup`, `logout` in `src/app/actions/auth.ts` with locale-aware redirects
+- **Validation**: Zod schemas with i18n error keys (`src/lib/auth/validation.ts`)
+- **Email Confirmation**: `src/app/auth/confirm/route.ts` handles OTP verification and OAuth code exchange
+- **Security**: `sanitizeNext()` prevents open redirect attacks on the confirmation callback
+- **Form Components**: `useActionState` for progressive enhancement, hidden locale fields for i18n-aware redirects
+- **Header Integration**: Auth-aware UI shows email + logout (authenticated) or login link (guest), 44px touch targets
 
 ### Security Headers
 

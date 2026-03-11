@@ -38,6 +38,26 @@
     "about": "关于",
     "settings": "设置"
   },
+  "auth": {
+    "login": "登录",
+    "signup": "注册",
+    "logout": "退出",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "loginSubmit": "登录",
+    "signupSubmit": "注册",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？",
+    "checkEmail": "请查看邮箱中的确认链接。",
+    "loggingIn": "登录中...",
+    "signingUp": "注册中...",
+    "invalidEmail": "请输入有效的邮箱地址。",
+    "passwordMin": "密码至少需要 8 个字符。",
+    "passwordMismatch": "两次输入的密码不一致。",
+    "invalidCredentials": "邮箱或密码错误。",
+    "signupFailed": "无法创建账号，请重试。"
+  },
   "error": {
     "title": "出错了",
     "description": "发生了意外错误，请重试。",

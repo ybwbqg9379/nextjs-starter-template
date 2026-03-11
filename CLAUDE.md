@@ -77,9 +77,20 @@ Pre-commit hooks (husky + lint-staged) auto-run ESLint and Prettier on staged fi
 - Supabase full-stack platform: Postgres 17 + Auth + Storage + Realtime.
 - New API key format: `sb_publishable_` (client) / `sb_secret_` (server). Legacy JWT keys NOT used.
 - SSR clients: `src/lib/supabase/{client,server,middleware}.ts` via `@supabase/ssr`.
-- `proxy.ts` refreshes Supabase session before next-intl routing, forwards auth cookies with full options.
+- `proxy.ts` refreshes Supabase session before next-intl routing, forwards auth cookies with full options. Authenticated users on `/login` or `/signup` are redirected to the locale root.
 - Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
-- Pending: Auth flows (OAuth / Magic Link / SSO), Storage (file storage with RLS), Realtime (subscriptions).
+
+### Authentication
+
+- Email + Password with email verification (PKCE flow) via Supabase Auth.
+- Server Actions: `src/app/actions/auth.ts` -- `login`, `signup`, `logout` with locale-aware redirects.
+- Validation: `src/lib/auth/validation.ts` -- Zod schemas (`LoginSchema`, `SignupSchema`) with i18n error keys.
+- Email confirmation: `src/app/auth/confirm/route.ts` -- OTP verification + OAuth code exchange with open redirect prevention (`sanitizeNext`).
+- Form components: `src/components/login-form.tsx`, `src/components/signup-form.tsx` -- `useActionState` for progressive enhancement, hidden locale fields, 44px touch targets.
+- Pages: `src/app/[locale]/login/page.tsx`, `src/app/[locale]/signup/page.tsx`.
+- Header: auth-aware UI (email + logout when authenticated, login link when not).
+- Layout: `src/app/[locale]/layout.tsx` fetches user via `createClient()` and passes `userEmail` to Header.
+- Pending: OAuth / Magic Link / SSO, Storage (file storage with RLS), Realtime (subscriptions).
 
 ### Error Monitoring
 

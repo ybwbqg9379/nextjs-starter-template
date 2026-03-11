@@ -38,6 +38,26 @@
     "about": "About",
     "settings": "Settings"
   },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "loginSubmit": "Log in",
+    "signupSubmit": "Sign up",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "checkEmail": "Check your email for a confirmation link.",
+    "loggingIn": "Logging in...",
+    "signingUp": "Signing up...",
+    "invalidEmail": "Please enter a valid email address.",
+    "passwordMin": "Password must be at least 8 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "invalidCredentials": "Invalid email or password.",
+    "signupFailed": "Could not create account. Please try again."
+  },
   "error": {
     "title": "Something went wrong",
     "description": "An unexpected error occurred. Please try again.",

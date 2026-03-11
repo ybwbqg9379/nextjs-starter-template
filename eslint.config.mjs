@@ -18,6 +18,9 @@ const eslintConfig = defineConfig([
       'src/instrumentation.ts',
       'src/instrumentation-client.ts',
       'src/app/global-error.tsx',
+      'src/app/actions/**',
+      'src/app/auth/**',
+      'src/lib/auth/**',
     ],
     plugins: { i18next },
     rules: {
@@ -37,6 +40,9 @@ const eslintConfig = defineConfig([
               'attribute',
               'defaultTheme',
               'placeholder',
+              'autoComplete',
+              'variant',
+              'size',
             ],
           },
           callees: {

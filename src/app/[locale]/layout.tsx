@@ -10,6 +10,7 @@ import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
 import { ThemeProvider } from '@/components/theme-provider';
 import { routing } from '@/i18n/routing';
+import { createClient } from '@/lib/supabase/server';
 
 import '../globals.css';
 
@@ -55,13 +56,18 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
             <div className="flex min-h-screen flex-col bg-background text-foreground">
-              <Header />
+              <Header userEmail={user?.email ?? null} />
               {children}
               <Footer />
             </div>

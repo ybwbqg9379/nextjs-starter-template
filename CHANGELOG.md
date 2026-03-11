@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## Initial Template
 
+- **[2026-03-11]** Email + Password authentication with email verification: server actions (login/signup/logout), Zod validation with i18n error keys, email confirmation route with open redirect prevention, login/signup form components (useActionState, 44px touch targets), auth-aware Header with logout, middleware auth redirect for authenticated users on login/signup pages; 66 new tests, 156 total at 100% coverage
 - **[2026-03-11]** CI fix: add `SKIP_ENV_VALIDATION=true` to build step so CI doesn't fail on missing Supabase credentials
 - **[2026-03-11]** Supabase SSR integration: `@supabase/supabase-js` + `@supabase/ssr`; three client factories (browser/server/middleware); `proxy.ts` session refresh + next-intl composition with full cookie option forwarding; `env.ts` fail-fast validation for `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SERVICE_ROLE_KEY`; new API key format (`sb_publishable_` / `sb_secret_`); 14 new tests (proxy + middleware + server)
 - Next.js 16 with App Router and Turbopack

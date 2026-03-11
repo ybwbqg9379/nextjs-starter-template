@@ -7,14 +7,25 @@ AI agent guidelines for this repository. All agents (Claude Code, Copilot, Curso
 ```
 src/
   app/              # Next.js App Router (pages, layouts, error boundaries)
+    actions/
+      auth.ts       # Server Actions: login, signup, logout
+    auth/
+      confirm/
+        route.ts    # Email confirmation callback (OTP + code exchange)
     [locale]/       # i18n dynamic segment
+      login/        # Login page
+      signup/       # Signup page
     globals.css     # Tailwind CSS 4 theme & design tokens
     global-error.tsx
   components/       # Shared React components
+    login-form.tsx  # Login form (useActionState, i18n errors)
+    signup-form.tsx # Signup form (useActionState, email confirmation)
     ui/             # shadcn/ui base components (Button, PageCenter)
   i18n/             # Internationalization utilities
   lib/
     utils.ts        # cn() utility (clsx + tailwind-merge)
+    auth/
+      validation.ts # Zod schemas (LoginSchema, SignupSchema) + AuthState type
     supabase/       # Supabase SSR client factories
       client.ts     # Browser client (Client Components)
       server.ts     # Server client (Server Components / Route Handlers)

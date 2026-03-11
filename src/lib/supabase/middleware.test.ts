@@ -145,6 +145,25 @@ describe('updateSession', () => {
 
     // The returned response should be the rebuilt one (second in history)
     expect(responseHistory).toHaveLength(2);
-    expect(result.cookies).toBe(responseHistory[1]);
+    expect(result.response.cookies).toBe(responseHistory[1]);
+  });
+
+  it('returns response and user when authenticated', async () => {
+    const mockUser = { id: 'user-1', email: 'test@example.com' };
+    mockGetUser.mockResolvedValueOnce({ data: { user: mockUser }, error: null });
+
+    const request = createMockRequest();
+    const result = await updateSession(request);
+
+    expect(result.user).toEqual(mockUser);
+    expect(result.response).toBeDefined();
+    expect(result.response.cookies).toBe(responseHistory[0]);
+  });
+
+  it('returns null user when not authenticated', async () => {
+    const request = createMockRequest();
+    const result = await updateSession(request);
+
+    expect(result.user).toBeNull();
   });
 });
