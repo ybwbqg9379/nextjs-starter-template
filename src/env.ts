@@ -10,7 +10,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     // SENTRY_DSN and NEXT_PUBLIC_SENTRY_DSN must be set together for full
     // three-runtime coverage. Runtime warnings fire if either is missing.
-    SENTRY_DSN: z.string().url().optional(),
+    SENTRY_DSN: z.url().optional(),
     SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
     // Supabase service role key -- server-only, bypasses RLS
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
@@ -24,8 +24,8 @@ export const env = createEnv({
    * Must be prefixed with NEXT_PUBLIC_.
    */
   client: {
-    NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
-    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
+    NEXT_PUBLIC_SUPABASE_URL: z.url(),
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
     // NEXT_PUBLIC_APP_URL: z.string().url(),
   },

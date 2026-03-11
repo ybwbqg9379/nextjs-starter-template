@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 import { initialAuthState, LoginSchema, SignupSchema } from './validation';
 
@@ -21,7 +22,7 @@ describe('LoginSchema', () => {
     const result = LoginSchema.safeParse({ email: 'not-an-email', password: 'secret' });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
+      const errors = z.flattenError(result.error).fieldErrors;
       expect(errors.email).toContain('invalidEmail');
     }
   });
@@ -30,7 +31,7 @@ describe('LoginSchema', () => {
     const result = LoginSchema.safeParse({ email: 'user@example.com', password: '' });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
+      const errors = z.flattenError(result.error).fieldErrors;
       expect(errors.password).toBeDefined();
     }
   });
@@ -59,7 +60,7 @@ describe('SignupSchema', () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
+      const errors = z.flattenError(result.error).fieldErrors;
       expect(errors.password).toContain('passwordMin');
     }
   });
@@ -72,7 +73,7 @@ describe('SignupSchema', () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
+      const errors = z.flattenError(result.error).fieldErrors;
       expect(errors.confirmPassword).toContain('passwordMismatch');
     }
   });
@@ -85,7 +86,7 @@ describe('SignupSchema', () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
+      const errors = z.flattenError(result.error).fieldErrors;
       expect(errors.email).toContain('invalidEmail');
     }
   });

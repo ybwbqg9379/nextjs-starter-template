@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { z } from 'zod';
+
 import { LoginSchema, SignupSchema, type AuthState } from '@/lib/auth/validation';
 import { createClient } from '@/lib/supabase/server';
 
@@ -26,7 +28,7 @@ export async function login(_prevState: AuthState, formData: FormData): Promise<
   });
 
   if (!parsed.success) {
-    return { fieldErrors: parsed.error.flatten().fieldErrors };
+    return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
   }
 
   const supabase = await createClient();
@@ -52,7 +54,7 @@ export async function signup(_prevState: AuthState, formData: FormData): Promise
   });
 
   if (!parsed.success) {
-    return { fieldErrors: parsed.error.flatten().fieldErrors };
+    return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
   }
 
   const origin = await getOrigin();

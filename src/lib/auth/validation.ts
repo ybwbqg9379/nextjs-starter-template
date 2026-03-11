@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 export const LoginSchema = z.object({
-  email: z.string().trim().email('invalidEmail'),
+  email: z.pipe(z.string().trim(), z.email('invalidEmail')),
   password: z.string().trim().min(1, 'passwordRequired'),
 });
 
 export const SignupSchema = z
   .object({
-    email: z.string().trim().email('invalidEmail'),
+    email: z.pipe(z.string().trim(), z.email('invalidEmail')),
     password: z.string().trim().min(8, 'passwordMin'),
     confirmPassword: z.string(),
   })
